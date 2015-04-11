@@ -100,7 +100,7 @@ def getMosaicData():
 		mosaicDict[imName] = tileArray
 	
 	for item in mosaicDict.keys():
-	    compositeMosaicDict[item + "_composite"] = tuple([tuple([x + "_composite" for x in line]) for line in mosaicDict[item]])
+	    compositeMosaicDict[item.split('.')[0] + "_composite" + ".JPEG"] = tuple([tuple([x.split('.')[0] + "_composite" + ".JPEG" for x in line]) for line in mosaicDict[item]])
 
 	for image,imName in imageList:
 		tileArray = mosaicDict[imName]
