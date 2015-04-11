@@ -1,8 +1,8 @@
 from PIL import Image
 import os
 import random 
-IMAGE_WIDTH = 60
-IMAGE_HEIGHT = 60
+IMAGE_WIDTH = 600
+IMAGE_HEIGHT = 600
 TILE_WIDTH = 15
 TILE_HEIGHT = 15
 
@@ -88,31 +88,32 @@ def getMosaicData():
 						closestDifference = pixelDifference(tileArray[y][x],imagePixelDict[imName2])
 				tileArray[y][x] = closestImageName	#change tileArray to be made of images rather than pixels
 		mosaicDict[imName] = tileArray
+	
+	for item in mosaicDict.keys():
+	    compositeMosaicDict[item + "_composite"] = tuple([tuple([x + "_composite" for x in line]) for line in mosaicDict[item]])
 
 	for image,imName in imageList:
 		tileArray = mosaicDict[imName]
-		print imName + "first"
-		compositeImage = Image.new('RGBA',(IMAGE_WIDTH,IMAGE_HEIGHT))
+		compositeImage = Image.new("RGBA",(IMAGE_WIDTH,IMAGE_HEIGHT))
 		numWidthTiles = IMAGE_WIDTH/TILE_WIDTH
 		numHeightTiles = IMAGE_HEIGHT/TILE_HEIGHT
 		for tileY in range(numHeightTiles):
-			print imName + "second"
-			for tileX in range(numWidthTiles):
-				littleImage = findImage(tileArray[tileY][tileX],imageList)
-				littleImage.thumbnail((TILE_WIDTH,TILE_HEIGHT))
-				for littleY in range(TILE_HEIGHT):
-					for littleX in range(TILE_WIDTH):
-						pixelColor = littleImage.getpixel((littleX,littleY))
-						compositeImage.putpixel((TILE_WIDTH* tileX+littleX,TILE_HEIGHT* tileY + littleY),pixelColor)
+		    for tileX in range(numWidthTiles):
+		        littleImage = findImage(tileArray[tileY][tileX],imageList)
+		        littleImage.thumbnail((TILE_WIDTH,TILE_HEIGHT))
+		        for littleY in range(TILE_HEIGHT):
+		          for littleX in range(TILE_WIDTH):
+			     pixelColor = littleImage.getpixel((littleX,littleY))
+			     compositeImage.putpixel((TILE_WIDTH* tileX+littleX,TILE_HEIGHT* tileY + littleY),pixelColor)
 		image.convert("RGBA")
-		blendedImage = Image.blend(compositeImage,image,.5)
-		blendedImage.save(imName.split(".")[0]+"_composite.JPEG","JPEG")
+		#blendedImage = Image.blend(compositeImage,image,.5)
+		compositeImage.save(imName.split(".")[0]+"_composite.JPEG","JPEG")
 		print imName
 
 
 		# process image to become composite
 		#save as imName + "composite"
-	return mosaicDict
+	return compositeMosaicDict
 
-
-getMosaicData()
+if __name__ == "__main__":
+	getMosaicData()
