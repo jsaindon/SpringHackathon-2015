@@ -1,10 +1,17 @@
 from PIL import Image
 import os
 import random 
+try:
+	import cPickle as pickle
+except:
+	import pickle
+
 IMAGE_WIDTH = 600
 IMAGE_HEIGHT = 600
 TILE_WIDTH = 15
 TILE_HEIGHT = 15
+
+IMG_MAPPINGS_FILE_NAME = "mappings"
 
 
 def findAvgPixels(startX, startY, endX, endY, image):
@@ -45,15 +52,17 @@ def loadImages():
 	"""	returns a list of images
 	"""
 	imageList = []
-	#imPath = os.path.join(scriptDir, "/img")
-	imPath = os.getcwd() + "/img/" # get absolute path
+	#imPath = os.path.join(scriptDir, "/images")
+	imPath = os.getcwd() + "/images/" # get absolute path
 	listing = os.listdir(imPath)     # get file names
 	
 	for imName in listing:
-		image = Image.open(imPath + imName)	# open images
-		image = image.convert("RGB")
-		imageList.append((image,imName))
-	
+		try:
+			image = Image.open(imPath + imName)	# open images
+			image = image.convert("RGB")
+			imageList.append((image,imName))
+		except IOError:
+			print(imName,": not an image file")
 	return imageList
 
 def findImage(name,imageList):
@@ -107,7 +116,7 @@ def getMosaicData():
 			     compositeImage.putpixel((TILE_WIDTH* tileX+littleX,TILE_HEIGHT* tileY + littleY),pixelColor)
 		image.convert("RGBA")
 		#blendedImage = Image.blend(compositeImage,image,.5)
-		compositeImage.save(imName.split(".")[0]+"_composite.JPEG","JPEG")
+		compositeImage.save(os.getcwd() + "/composite_images/" + imName.split(".")[0]+"_composite.JPEG","JPEG")
 		print imName
 
 
@@ -115,5 +124,19 @@ def getMosaicData():
 		#save as imName + "composite"
 	return compositeMosaicDict
 
+def processImages():
+	mosaicDict = getMosaicData()
+
+	data = {
+		"mappings" : mosaicDict,
+		"width" : IMAGE_WIDTH,
+		"length" : IMAGE_HEIGHT,
+		"tile_width" : TILE_WIDTH,
+		"tile_length" : TILE_HEIGHT
+	}
+
+	with open(IMG_MAPPINGS_FILE_NAME, 'wb') as f:
+		pickle.dump(data, f)
+
 if __name__ == "__main__":
-	getMosaicData()
+	processImages()

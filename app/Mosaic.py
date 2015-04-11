@@ -2,8 +2,13 @@ import random
 import time
 import os
 import Image from PIL
+try:
+	import cPickle as pickle
+except:
+	import pickle
 
 DEBUG = True
+IMG_MAPPINGS_FILE_NAME = "mappings"
 
 class Mosaic:
 	MOSAIC_FILE_NAME = "images/mosaic"
@@ -14,15 +19,22 @@ class Mosaic:
 	NUM_STEPS = 5
 	#SWITCH_INTERVAL = Mosaic.NUM_STEPS / 5
 
-	def __init__(self, mappings, imgName, width, length, tile_size):
-		self.mappings = mappings # key: composite image name, value: 2D array mapping image names
-		self.imgName = imgName
+	def __init__(self, fname=Mosaic.IMG_MAPPINGS_FILE_NAME, imgName=None): #  mappings, imgName, width, length, tile_size):
+		with open(fname, 'rb') as f:
+			data = pickle.load(f)
+
+		self.mappings = data["mappings"] # key: composite image name, value: 2D array mapping image names
+
+		if imgName:
+			self.imgName = imgName
+		else:
+			# pick random composite image
+			self.imgName = os.path.basename(random.choice(os.listdir(os.getwd() + "images/")))
 		self.image = Image.open(imgName)
-		self.width = width
-		self.length = length
-		self.tile_width = tile_size[0]
-		self.tile_length = tile_size[1]
-		self.scale = 1.0
+		self.width = data["width"]
+		self.length = data["length"]
+		self.tile_width = data["tile_width"]
+		self.tile_length = data["tile_length"]
 		self.layers = [] # History of mosaic layers in the form (imgName, tilePicked)
 
 	def pickRandomTile(self):
@@ -131,3 +143,7 @@ class Mosaic:
 	def render(img):
 		# save img, front end will update img source on source chance
 		img.save(os.getcwd() + Mosaic.MOSAIC_FILE_NAME, Mosaic.MOSAIC_FILE_EXTENSION)
+
+	@staticmethod
+	def test_animation():
+		mosaic = Mosaic(Mosaic.IMG_MAPPINGS_FILE_NAME, )

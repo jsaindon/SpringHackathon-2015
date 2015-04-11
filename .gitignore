@@ -60,3 +60,5 @@ target/
 *.jpg
 *.jpeg
 *.png
+*.bmp
+*.gif
