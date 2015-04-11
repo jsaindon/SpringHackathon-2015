@@ -6,10 +6,8 @@ try:
 	import cPickle as pickle
 except:
 	import pickle
-
-=======
 from copy import copy
->>>>>>> d4668fee75959df29af81816a5adc50e75a956ba
+
 IMAGE_WIDTH = 600
 IMAGE_HEIGHT = 600
 TILE_WIDTH = 15
