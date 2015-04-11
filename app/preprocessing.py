@@ -1,7 +1,6 @@
 from PIL import Image
 import os
 import random 
-<<<<<<< HEAD
 try:
 	import cPickle as pickle
 except:
