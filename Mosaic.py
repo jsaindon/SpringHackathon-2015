@@ -7,7 +7,7 @@ DEBUG = True
 
 class Mosaic:
 	MOSAIC_FILE_NAME = "images/mosaic"
-	MOSAIC_FILE_EXTENSION = ".jpg"
+	MOSAIC_FILE_EXTENSION = "bmp"
 	
 	TIME_STEP = 0.2
 	FOREVER_MODE = False
