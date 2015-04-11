@@ -1,11 +1,15 @@
 from PIL import Image
 import os
 import random 
+<<<<<<< HEAD
 try:
 	import cPickle as pickle
 except:
 	import pickle
 
+=======
+from copy import copy
+>>>>>>> d4668fee75959df29af81816a5adc50e75a956ba
 IMAGE_WIDTH = 600
 IMAGE_HEIGHT = 600
 TILE_WIDTH = 15
@@ -103,20 +107,21 @@ def getMosaicData():
 
 	for image,imName in imageList:
 		tileArray = mosaicDict[imName]
-		compositeImage = Image.new("RGBA",(IMAGE_WIDTH,IMAGE_HEIGHT))
+		compositeImage = Image.new("RGB",(IMAGE_WIDTH,IMAGE_HEIGHT))
 		numWidthTiles = IMAGE_WIDTH/TILE_WIDTH
 		numHeightTiles = IMAGE_HEIGHT/TILE_HEIGHT
 		for tileY in range(numHeightTiles):
 		    for tileX in range(numWidthTiles):
-		        littleImage = findImage(tileArray[tileY][tileX],imageList)
+		        littleImage = findImage(tileArray[tileY][tileX],imageList).copy()
 		        littleImage.thumbnail((TILE_WIDTH,TILE_HEIGHT))
 		        for littleY in range(TILE_HEIGHT):
 		          for littleX in range(TILE_WIDTH):
 			     pixelColor = littleImage.getpixel((littleX,littleY))
 			     compositeImage.putpixel((TILE_WIDTH* tileX+littleX,TILE_HEIGHT* tileY + littleY),pixelColor)
-		image.convert("RGBA")
-		#blendedImage = Image.blend(compositeImage,image,.5)
-		compositeImage.save(os.getcwd() + "/composite_images/" + imName.split(".")[0]+"_composite.JPEG","JPEG")
+
+		blendedImage = Image.blend(compositeImage,image,.5)
+		blendedImage.save(os.getcwd() + "/composite_images/" + imName.split(".")[0]+"_composite.JPEG","JPEG")
+
 		print imName
 
 
