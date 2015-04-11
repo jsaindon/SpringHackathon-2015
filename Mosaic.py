@@ -1,10 +1,15 @@
 import random
+import time
+import os
 import Image from PIL
 
 DEBUG = True
 
 class Mosaic:
+	MOSAIC_FILE_NAME = "images/mosaic"
+	MOSAIC_FILE_EXTENSION = ".jpg"
 	
+	TIME_STEP = 0.2
 	FOREVER_MODE = False
 	NUM_STEPS = 5
 	#SWITCH_INTERVAL = Mosaic.NUM_STEPS / 5
@@ -34,7 +39,7 @@ class Mosaic:
 			tile = self.pickRandomTile()
 		else:
 			tile = chosen_tile
-			
+
 		tile_img_name = self.mappings[this.imgName][tile[0]][tile[1]]
 
 		# save current mosaic key in self.layers
@@ -69,6 +74,9 @@ class Mosaic:
 			# crop image
 			self.image = self.image.transform((self.width, self.length), Image.EXTENT, newRectangle)
 
+			#time
+			time.sleep(Mosaic.TIME_STEP)
+
 			if DEBUG:
 				self.image.show()
 
@@ -102,6 +110,9 @@ class Mosaic:
 			if DEBUG:
 				newImage.show()
 
+			# sleep for a bit
+			time.sleep(Mosaic.TIME_STEP)
+
 			# render intermediate image
 			self.render(newImage)
 
@@ -118,4 +129,5 @@ class Mosaic:
 		return (leftX, upperY, rightX, lowerY)
 
 	def render(img):
-		# render stuff
+		# save img, front end will update img source on source chance
+		img.save(os.getcwd() + Mosaic.MOSAIC_FILE_NAME, Mosaic.MOSAIC_FILE_EXTENSION)
